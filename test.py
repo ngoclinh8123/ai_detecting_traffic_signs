@@ -109,8 +109,15 @@ input_image = np.expand_dims(input_image, axis=0)  # Thêm chiều batch
 predictions = loaded_model.predict(input_image)
 predicted_class = np.argmax(predictions)
 
-# Lấy tên của biển báo từ bảng ánh xạ
-predicted_sign = class_mapping_vie.get(predicted_class, "Unknown Sign")
+# Lấy tỷ lệ dự đoán của lớp được chọn
+confidence = predictions[0][predicted_class]
+
+# Kiểm tra tỷ lệ dự đoán, nếu dưới 50% thì trả về "Unknown sign"
+if confidence < 0.5:
+    predicted_sign = "Không thể xác định"
+else:
+    # Lấy tên của biển báo từ bảng ánh xạ
+    predicted_sign = class_mapping_vie.get(predicted_class, "Không thể xác định")
 
 # In kết quả dự đoán
 print(f"Predicted Sign: {predicted_sign}")
